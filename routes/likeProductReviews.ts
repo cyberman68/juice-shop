@@ -13,6 +13,9 @@ const security = require('../lib/insecurity')
 
 module.exports = function productReviews () {
   return (req: Request, res: Response, next: NextFunction) => {
+    if (!security.isAuthenticated(req)) {
+      return res.status(401).send({ error: 'Unauthorized' })
+    }
     const id = req.body.id
     const user = security.authenticatedUsers.from(req)
     db.reviewsCollection.findOne({ _id: id }).then((review: Review) => {
